@@ -20,18 +20,16 @@ sudo docker-compose stop
 sudo docker-compose rm 
 ```
 
-Go to the folder specified in .env file (if its /media/Arr then go to /media as root) and 
-run chown command with the user id and group id configured in that .env file:<br />
-`chown -R 1000:1000 Arr`<br />
+Chage ownership of the folder specified in .env file (by default its /media/Arr) and 
+run 'chown' command with the user id and group id configured in that .env file:<br />
+`chown -R 1000:1000 /media/Arr`<br />
 Now you can log on and work with all services.<br />
 
 First configure the qBittorrent service because its using temporary password only:<br />
 
 **qBittorrent:**<br />
-First - find the qbittorrent container id by running:<br />
-`sudo docker ps`<br />
-Then check logs for that container it:<br />
-`sudo docker logs <qbittorrent-container-id>`<br />
+Check logs for qbittorrent container:<br />
+`sudo docker logs qbittorrent`<br />
 You will see in the logs something like:<br />
 *The WebUI administrator username is: admin<br />
 The WebUI administrator password was not set. A temporary password is provided for this session: <your-password-will-be-here>* <br />
@@ -40,21 +38,26 @@ http://localhost:8080<br />
 and log on using details provided in container logs.<br />
 Go to Tools - Options - WebUI - change the user and password and tick 'bypass authentication for clients on localhost' .<br />
 
-Then first configure Prowlarr service (each of these services will require to set up user/pass):<br />
+Then configure Prowlarr service (each of these services will require to set up user/pass):<br />
 
 **Prowlarr:**<br />
 http://localhost:9696<br />
 Go to Settings - Download Clients - `+` symbol - Add download client - choose qBittorrent (unless you decided touse different download client)<br />
 Put the port id matching the WebUI in docker-compose for qBittorrent (default is 8080) and username and password that you configured for qBittorrent in previous step<br />
-Host - you have to change from localhost to ip address of the host machine (run 'ip address' command on your host system)<br />
+Host - you might want to change from 'localhost'to ip address of the host machine (run 'ip address' command on your host system)<br />
+or to 'qbittorrent' - click little 'Test' button at the bottom before saving to make sure you get a green 'tick'.<br />
 
 **Sonarr:**<br />
 http://localhost:8989<br />
-Go to Settings - Media Management - Add Root Folder - set /data/tvshows as your root folder<br />
+Go to Settings - Media Management - Add Root Folder - set your root folder to what is on the right side of the colon<br />
+in 'volume' config line for Sonarr - in our file its ${ARRPATH}Sonarr/tvshows:/data/tvshows<br />
+so set '/data/tvshows' as your root folder<br />
 Go to Settings - Download Clients - click `+` symbol - choose qBittorrent and repeat the steps from Prowlarr.<br />
-(there are also 'Remote Path Mappings' - use only if your qBittorrent and ARR stack are on different hosts / systems)<br />
-Go to Settings - General - scroll down to API key - copy - go to Prowlarr - Settings - Apps -click '+' - Sonarr - paste  API key and change 'localhost' to ip address of the Ubuntu/Host again.<br />
-Then Settings - General - switch to 'show advanced' in top left corner - scroll down to 'Backups' and choose /data/Backup (or whatever location you have in your docker compose file for Sonarr backups )<br />
+Go to Settings - General - scroll down to API key - copy - go to Prowlarr - Settings - Apps -click '+' - Sonarr - paste  API key. <br />
+You might also have to  change 'localhost' to ip address of the Ubuntu/Host - use 'Test' button below to see if you get green 'tick'.<br />
+Then Settings - General - switch to 'show advanced' in top left corner - scroll down to 'Backups' and choose /data/Backup (or whatever <br />
+location you have in your docker compose file for Sonarr backups- we have ${ARRPATH}Sonarr/backup:/data/Backup hence we set /data/Backup )<br />
+as you have to choose again whatever is there on the right side from the colon <br />
 
 **Radarr:**<br />
 http://localhost:7878<br />
@@ -87,3 +90,15 @@ Then add media library in Jellyfin  matching folders configured in docker-compos
 /data/TVShows <br />
 /data/Music <br />
 /data/Books <br />
+
+That might depend on the image, you basically match the right side of the config in Jellyfin's 'volume' configuration. <br />
+If the volume configuration looks like that: <br />
+```
+    volumes:
+      - ${ARRPATH}Radarr/movies:/data/Movies
+      - ${ARRPATH}Sonarr/tvshows:/data/TVShows
+      - ${ARRPATH}Lidarr/music:/data/Music
+      - ${ARRPATH}Readarr/books:/data/Books
+```
+then on the container you match that right side from the colon ( /data/Movies, /data/TVShows etc )<br />
+
