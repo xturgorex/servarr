@@ -1,6 +1,3 @@
-# youtube-39-arr-apps-1-click
-Video 39 - Deploy ARR apps using just 1 command (full set with Jellyfin and qBittorrent !!!)
-
 ### Useful Links:
 - [Servarr Wiki](https://wiki.servarr.com/)
 - [Trash Guides](https://trash-guides.info/)
@@ -50,8 +47,8 @@ or to 'qbittorrent' - click little 'Test' button at the bottom before saving to 
 **Sonarr:**<br />
 http://localhost:8989<br />
 Go to Settings - Media Management - Add Root Folder - set your root folder to what is on the right side of the colon<br />
-in 'volume' config line for Sonarr - in our file its ${ARRPATH}Sonarr/tvshows:/data/tvshows<br />
-so set '/data/tvshows' as your root folder<br />
+in 'volume' config line for Sonarr - in our file its {ARRPATH}Sonarr/tvshows:/data/tvshows<br />
+so set '/data/tvshows' as your root folder.<br />
 Go to Settings - Download Clients - click `+` symbol - choose qBittorrent and repeat the steps from Prowlarr.<br />
 Go to Settings - General - scroll down to API key - copy - go to Prowlarr - Settings - Apps -click '+' - Sonarr - paste  API key. <br />
 You might also have to  change 'localhost' to ip address of the Ubuntu/Host - use 'Test' button below to see if you get green 'tick'.<br />
